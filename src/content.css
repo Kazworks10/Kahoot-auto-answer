@@ -1,0 +1,105 @@
+/* Answer highlighting (attributes set by page.js on Kahoot's answer buttons). */
+[data-kaa="other"] {
+  opacity: 0.3 !important;
+  filter: saturate(0.4) !important;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+[data-kaa="correct"] {
+  box-shadow: inset 0 0 0 5px #fff, 0 0 0 3px #26890c, 0 0 18px 4px rgba(38, 137, 12, 0.85) !important;
+}
+
+/* In-game overlay. */
+#kaa-overlay {
+  all: initial;
+  display: block;
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(25, 12, 48, 0.92);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  cursor: pointer;
+  user-select: none;
+}
+
+#kaa-overlay[hidden] {
+  display: none !important;
+}
+
+#kaa-overlay div,
+#kaa-overlay span {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+#kaa-overlay .kaa-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#kaa-overlay .kaa-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: #8a8a8a;
+}
+
+#kaa-overlay[data-state="ok"] .kaa-dot {
+  background: #3fd13f;
+}
+
+#kaa-overlay[data-state="warn"] .kaa-dot {
+  background: #ffa602;
+}
+
+#kaa-overlay .kaa-name {
+  font-weight: 700;
+}
+
+#kaa-overlay .kaa-mode {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+}
+
+#kaa-overlay .kaa-q {
+  margin-left: auto;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+#kaa-overlay .kaa-body {
+  margin-top: 6px;
+}
+
+#kaa-overlay[data-collapsed] .kaa-body {
+  display: none;
+}
+
+#kaa-overlay .kaa-quiz {
+  overflow: hidden;
+  opacity: 0.7;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#kaa-overlay .kaa-answer {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: pre-line;
+  word-break: break-word;
+}

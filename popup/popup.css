@@ -1,0 +1,291 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1d1b22;
+  --muted: #6b6676;
+  --line: #e4e0ea;
+  --field: #f5f3f8;
+  --accent: #46178f;
+  --accent-fg: #ffffff;
+  --ok: #26890c;
+  --error: #c4122f;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1622;
+    --fg: #f1eef6;
+    --muted: #a59fb1;
+    --line: #342c40;
+    --field: #261f31;
+    --accent: #8c5ae0;
+    --ok: #5cd13d;
+    --error: #ff6b81;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 360px;
+  margin: 0;
+  padding: 14px 16px 12px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 16px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+section {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  margin: 8px 0 4px;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+input[type="text"],
+input:not([type]),
+input[type="search"],
+input[type="number"] {
+  min-width: 0;
+  flex: 1;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--field);
+  color: inherit;
+  font: inherit;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+button {
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.icon {
+  padding: 4px 8px;
+  background: transparent;
+  color: var(--muted);
+}
+
+#status {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+#status.ok {
+  color: var(--ok);
+}
+
+#status.error {
+  color: var(--error);
+}
+
+#results {
+  max-height: 220px;
+  margin: 8px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+#results button {
+  display: block;
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font-weight: 400;
+  text-align: left;
+}
+
+#results button:hover {
+  border-color: var(--accent);
+}
+
+.r-title {
+  display: block;
+  font-weight: 600;
+}
+
+.r-meta,
+#quiz-meta {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.quiz-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+#quiz-cover {
+  width: 56px;
+  height: 40px;
+  flex: none;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.quiz-info {
+  min-width: 0;
+  flex: 1;
+}
+
+#quiz-title {
+  overflow: hidden;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+details {
+  margin-top: 6px;
+}
+
+summary {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+#answer-list {
+  max-height: 240px;
+  margin: 6px 0 0;
+  padding-left: 22px;
+  overflow-y: auto;
+}
+
+#answer-list li {
+  margin-bottom: 6px;
+}
+
+.a-q {
+  color: var(--muted);
+}
+
+.a-a {
+  font-weight: 600;
+}
+
+.seg {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.seg label {
+  flex: 1;
+  margin: 0;
+  color: inherit;
+}
+
+.seg input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.seg span {
+  display: block;
+  padding: 7px 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.seg input:checked + span {
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 600;
+}
+
+.seg input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.delay {
+  margin-top: 10px;
+}
+
+.delay span:first-child {
+  flex: 1;
+  color: var(--muted);
+}
+
+.delay input {
+  max-width: 64px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: inherit;
+}
+
+footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+footer a {
+  color: var(--accent);
+}
+
+[hidden] {
+  display: none !important;
+}
