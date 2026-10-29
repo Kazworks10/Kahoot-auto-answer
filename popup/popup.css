@@ -272,6 +272,21 @@ summary {
   max-width: 64px;
 }
 
+.sub {
+  margin-top: 6px;
+  padding-left: 24px;
+  color: var(--muted);
+}
+
+.sub input {
+  max-width: 64px;
+  flex: none;
+}
+
+.sub input:disabled {
+  opacity: 0.5;
+}
+
 .check {
   display: flex;
   align-items: center;

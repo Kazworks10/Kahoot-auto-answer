@@ -1,6 +1,14 @@
 import { UUID_RE, fetchQuiz, plain, searchQuizzes } from '../src/kahoot.js';
 
-const DEFAULTS = { mode: 'auto', delayMin: 0.6, delayMax: 1.6, showOverlay: true, autoDetect: true };
+const DEFAULTS = {
+  mode: 'auto',
+  delayMin: 0.6,
+  delayMax: 1.6,
+  showOverlay: true,
+  autoDetect: true,
+  humanize: false,
+  accuracy: 80,
+};
 
 const $ = (id) => document.getElementById(id);
 
@@ -100,17 +108,23 @@ function renderSettings() {
   $('delay-max').value = settings.delayMax;
   $('show-overlay').checked = settings.showOverlay;
   $('auto-detect').checked = settings.autoDetect;
+  $('humanize').checked = settings.humanize;
+  $('accuracy').value = settings.accuracy;
+  $('accuracy').disabled = !settings.humanize;
 }
 
 function saveSettings() {
   const min = Math.max(0, Number($('delay-min').value) || 0);
   const max = Math.max(min, Number($('delay-max').value) || 0);
+  const accuracy = $('accuracy').valueAsNumber;
   settings = {
     mode: document.querySelector('input[name="mode"]:checked')?.value || DEFAULTS.mode,
     delayMin: min,
     delayMax: max,
     showOverlay: $('show-overlay').checked,
     autoDetect: $('auto-detect').checked,
+    humanize: $('humanize').checked,
+    accuracy: Number.isNaN(accuracy) ? DEFAULTS.accuracy : Math.min(100, Math.max(0, Math.round(accuracy))),
   };
   renderSettings();
   chrome.storage.local.set({ settings });
@@ -143,7 +157,10 @@ document.querySelectorAll('#settings input').forEach((el) => el.addEventListener
 
 // The background worker may load a detected quiz while the popup is open.
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && changes.quiz) renderQuiz(changes.quiz.newValue || null);
+  if (area !== 'local' || !changes.quiz) return;
+  const quiz = changes.quiz.newValue || null;
+  renderQuiz(quiz);
+  if (quiz && quiz.autoDetected) setStatus('');
 });
 
 chrome.storage.local.get(['quiz', 'settings'], (data) => {

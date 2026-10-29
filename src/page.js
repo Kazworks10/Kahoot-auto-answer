@@ -8,7 +8,15 @@
 // records what each question shows (its text and answer texts) and asks the
 // background worker, via bridge.js, to find the public quiz that matches.
 (() => {
-  const DEFAULTS = { mode: 'auto', delayMin: 0.6, delayMax: 1.6, showOverlay: true, autoDetect: true };
+  const DEFAULTS = {
+    mode: 'auto',
+    delayMin: 0.6,
+    delayMax: 1.6,
+    showOverlay: true,
+    autoDetect: true,
+    humanize: false,
+    accuracy: 80,
+  };
   const SHAPES = [
     { icon: '\u25B2', name: 'Red' },
     { icon: '\u25C6', name: 'Blue' },
@@ -31,6 +39,11 @@
   let gameKey = null;
   let lastIndex = -1;
   let detect = { sig: null, state: 'idle' };
+
+  // Humanizer: auto-answers given this game, and the current question's
+  // decision ({ key, miss, picks }) so it's made only once per question.
+  let tally = { answered: 0, missed: 0 };
+  let plan = null;
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const parser = new DOMParser();
@@ -184,6 +197,8 @@
     if (key !== gameKey || (info.index !== null && info.index < lastIndex)) {
       gameKey = key;
       observed.clear();
+      tally = { answered: 0, missed: 0 };
+      plan = null;
     }
     if (info.index !== null) lastIndex = info.index;
     // Only record while answers are up, when the question state has settled.
@@ -225,6 +240,38 @@
       return "This device doesn't get the question text, so the quiz can't be detected. Load it in the popup.";
     }
     return 'Waiting for the first question\u2026';
+  }
+
+  // ------------------------------------------------------------ Humanizer
+
+  const pickOne = (list) => list[Math.floor(Math.random() * list.length)];
+
+  // A plausible wrong answer, or null when every choice is correct.
+  function wrongPicks(q, answers, targets) {
+    const others = answers.filter((a) => !targets.includes(a));
+    if (q.type !== 'multiple_select_quiz') return others.length ? [pickOne(others)] : null;
+    // Multi-select: leave out one correct choice or add a wrong one.
+    if (targets.length > 1 && (!others.length || Math.random() < 0.5)) {
+      const drop = pickOne(targets);
+      return targets.filter((t) => t !== drop);
+    }
+    return others.length ? [...targets, pickOne(others)] : null;
+  }
+
+  // Decides what to press for this question. With the humanizer on, misses
+  // are spread so the game's hit rate stays near the target accuracy rather
+  // than leaving it to luck.
+  function makePlan(key, q, answers, targets) {
+    let picks = targets;
+    if (settings.humanize) {
+      const accuracy = Math.min(100, Math.max(0, Number(settings.accuracy) || 0)) / 100;
+      const due = (tally.answered + 1) * (1 - accuracy) - tally.missed;
+      if (Math.random() < due) picks = wrongPicks(q, answers, targets) || targets;
+    }
+    const miss = picks !== targets;
+    tally.answered++;
+    if (miss) tally.missed++;
+    return { key, miss, picks: picks.map((a) => a.n) };
   }
 
   // -------------------------------------------------------------- Actions
@@ -371,6 +418,14 @@
         })
         .join('\n');
     }
+
+    // The key includes the quiz so a newly detected quiz gets its own try.
+    const key = answers.length ? `${quiz.uuid}|${qi}|${answers.map((a) => a.n).join(',')}` : null;
+    const live = answers.some((a) => !isDisabled(a.el));
+    const answering = settings.mode === 'auto' && live && !mismatch && targets.length > 0;
+    if (answering && (!plan || plan.key !== key)) plan = makePlan(key, q, answers, targets);
+    if (answering && plan.miss) answer += '\nHumanizer: missing this one on purpose';
+
     const state = mismatch ? (detect.state === 'running' ? 'busy' : 'warn') : 'ok';
     render({ state, q: qLabel, answer });
 
@@ -378,12 +433,9 @@
       handledKey = null;
       return;
     }
-    if (answers.every((a) => isDisabled(a.el))) return;
-    // The key includes the quiz so a newly detected quiz gets its own try.
-    const key = `${quiz.uuid}|${qi}|${answers.map((a) => a.n).join(',')}`;
-    if (key === handledKey || mismatch) return;
+    if (!answering || key === handledKey) return;
     handledKey = key;
-    if (settings.mode === 'auto' && targets.length) scheduleAnswer(q, targets);
+    scheduleAnswer(q, answers.filter((a) => plan.picks.includes(a.n)));
   }
 
   let queued = false;

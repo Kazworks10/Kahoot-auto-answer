@@ -48,10 +48,15 @@ Click the extension icon and either:
 | **Highlight** | Only highlights the correct answer; you tap it yourself. |
 | **Off** | Does nothing on the page. |
 | **Answer delay** | Waits a random time in this range before answering. Faster answers score more points. |
+| **Humanizer** | Gets some questions wrong on purpose so a perfect score doesn't give you away. Set the percentage you want right. Only applies to Auto-answer. |
 | **Detect the quiz automatically** | Turns auto-detect on or off. |
 | **Show answer overlay** | Shows or hides the in-game overlay. **Alt+H** also toggles it, and clicking it collapses it. |
 
 The popup's **Show all answers** list shows every question and its answer.
+
+### Humanizer
+
+With the humanizer on and set to, say, 80%, the extension misses about 1 question in 5. It spreads the misses out so each game lands close to your target, rather than leaving it to chance, which can easily mean no misses in 10 questions or several in a row. A miss picks a random wrong answer. On multi-select questions it either leaves out one correct choice or adds a wrong one. The overlay tells you when it's missing a question on purpose, and the count starts again for each new game.
 
 ### Question types
 

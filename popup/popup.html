@@ -60,6 +60,12 @@
         <input id="delay-max" type="number" min="0" max="30" step="0.1" aria-label="Maximum delay in seconds" />
         <span>sec</span>
       </div>
+      <label class="check"><input id="humanize" type="checkbox" /> Humanizer: get some questions wrong</label>
+      <div class="row sub">
+        <span>Aim for</span>
+        <input id="accuracy" type="number" min="0" max="100" step="5" aria-label="Target percent correct" />
+        <span>% correct</span>
+      </div>
       <label class="check"><input id="auto-detect" type="checkbox" /> Detect the quiz automatically</label>
       <label class="check"><input id="show-overlay" type="checkbox" /> Show answer overlay in game</label>
     </section>
