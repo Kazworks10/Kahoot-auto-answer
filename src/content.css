@@ -63,6 +63,17 @@
   background: #ffa602;
 }
 
+#kaa-overlay[data-state="busy"] .kaa-dot {
+  background: #46a6ff;
+  animation: kaa-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes kaa-pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+
 #kaa-overlay .kaa-name {
   font-weight: 700;
 }
